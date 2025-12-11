@@ -1,202 +1,414 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>심기준 | AI TRPG 포트폴리오</title>
-    <!-- Tailwind CSS 로드 -->
+    <title>AI 자율 진행 TRPG 시스템 - 포트폴리오</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Inter 폰트 로드 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* Inter 폰트 기본 적용 */
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* 다크 모드 기본 스타일 */
-        html {
-            color-scheme: dark;
-        }
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        .code-preview { font-family: 'Consolas', 'Monaco', monospace; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a202c; }
+        ::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #718096; }
     </style>
 </head>
-<body class="bg-slate-900 text-gray-100 antialiased">
+<body class="bg-gray-900 text-gray-100 antialiased selection:bg-indigo-500 selection:text-white">
 
-    <!-- 전체 컨테이너 -->
-    <div class="max-w-4xl mx-auto p-6 md:p-12">
-
-        <!-- 1. 기본 정보 (헤더) -->
-        <header class="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-10 mb-16">
-            <!-- 프로필 이미지 (플레이스홀더) -->
-            <img 
-                src="https://placehold.co/160x160/1e293b/94a3b8?text=KSJ" 
-                alt="심기준 프로필 이미지" 
-                class="w-40 h-40 rounded-full border-4 border-slate-700 shadow-lg flex-shrink-0"
-            >
-            
-            <div class="text-center md:text-left">
-                <!-- 이름 -->
-                <h1 class="text-4xl md:text-5xl font-bold text-white mb-2">심기준</h1>
-                
-                <!-- 한 줄 소개 -->
-                <p class="text-xl md:text-2xl text-indigo-400 font-medium mb-4">
-                    로컬 LLM과 규칙 엔진을 결합하여 1인 TRPG 경험을 구현하는 개발자
-                </p>
-
-                <!-- 연락처 링크 (GitHub, Email) -->
-                <div class="flex justify-center md:justify-start space-x-4">
-                    <a href="https://github.com/username" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 text-slate-300 hover:text-indigo-400 transition-colors duration-200">
-                        <!-- GitHub 아이콘 SVG -->
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.165 6.839 9.49.5.092.682-.217.682-.483 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.03-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.84c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.026 2.747-1.026.546 1.379.202 2.398.1 2.65.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd"></path></svg>
-                        <span>GitHub</span>
-                    </a>
-                    <a href="mailto:email@example.com" class="flex items-center space-x-2 text-slate-300 hover:text-indigo-400 transition-colors duration-200">
-                        <!-- 이메일 아이콘 SVG -->
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M1.75 3h20.5c.966 0 1.75.784 1.75 1.75v14.5A1.75 1.75 0 0122.25 21H1.75A1.75 1.75 0 010 19.25V4.75C0 3.784.784 3 1.75 3zM2.5 19.5h19V7.11l-9.33 6.315a1.25 1.25 0 01-1.34 0L2.5 7.11V19.5zM3.404 5l8.596 5.807L20.596 5H3.404z"></path></svg>
-                        <span>Email</span>
-                    </a>
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-gray-900/90 backdrop-blur-md border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400">
+                        AI TRPG Project
+                    </span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#home" class="hover:bg-gray-800 px-3 py-2 rounded-md text-sm font-medium transition">홈</a>
+                        <a href="#about" class="hover:bg-gray-800 px-3 py-2 rounded-md text-sm font-medium transition">소개</a>
+                        <a href="#architecture" class="hover:bg-gray-800 px-3 py-2 rounded-md text-sm font-medium transition">아키텍처</a>
+                        <a href="#gameplay" class="hover:bg-gray-800 px-3 py-2 rounded-md text-sm font-medium transition">플레이 시연</a>
+                        <a href="#code" class="hover:bg-gray-800 px-3 py-2 rounded-md text-sm font-medium transition">코드 다운로드</a>
+                    </div>
                 </div>
             </div>
-        </header>
+        </div>
+    </nav>
 
-        <!-- 메인 콘텐츠 영역 -->
-        <main class="space-y-16">
-        
-            <!-- 1.5. 상세 소개 (About Me) -->
-            <section>
-                <h2 class="text-3xl font-bold text-white mb-6 border-b border-slate-700 pb-2">
-                    About Me
-                </h2>
-                <div class="space-y-4 text-slate-300 text-lg leading-relaxed">
-                    <p>
-                        저는 AI 기술, 특히 로컬 LLM을 활용해 새로운 사용자 경험을 만드는 데 매력을 느끼는 개발자입니다. TRPG의 가장 큰 진입 장벽인 '게임 마스터(GM)의 부재' 문제를 기술로 해결하고자 이 프로젝트를 시작했습니다.
-                    </p>
-                    <p>
-                        Ollama와 Python을 기반으로, AI의 창의적인 서사 생성 능력과 Python의 엄격한 규칙 관리 능력을 명확히 분리하는 하이브리드 아키텍처를 설계하고 구현하는 과정에 집중했습니다. 이 프로젝트를 통해 복잡한 문제를 분해하고, AI 툴 호출(Tool Calling)과 같은 최신 기술을 적용하여 실제 작동하는 프로토타입을 완성한 시스템 설계 역량을 보여주고자 합니다.
+    <!-- Hero Section -->
+    <section id="home" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <div class="inline-flex items-center px-3 py-1 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-xs font-medium mb-6">
+                <span class="flex w-2 h-2 bg-indigo-400 rounded-full mr-2 animate-pulse"></span>
+                Project Release v1.0
+            </div>
+            <h1 class="text-4xl sm:text-6xl font-black tracking-tight mb-6">
+                <span class="block text-gray-100">GM 없는 TRPG는 가능하다</span>
+                <span class="block bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 mt-2">
+                    AI 기반 자율 진행 시스템
+                </span>
+            </h1>
+            <p class="mt-4 text-xl text-gray-400 max-w-2xl mx-auto">
+                생성형 AI(GPT-4o)의 상상력과 Python 규칙 엔진의 공정성을 결합하여,<br>
+                테마만 입력하면 무한한 모험이 펼쳐지는 하이브리드 게임 플랫폼입니다.
+            </p>
+            <div class="mt-10 flex justify-center gap-4">
+                <a href="#gameplay" class="px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition transform hover:scale-105 shadow-lg shadow-indigo-500/30 flex items-center">
+                    <i data-lucide="play-circle" class="w-5 h-5 mr-2"></i>
+                    시연 영상 보기
+                </a>
+                <a href="#code" class="px-8 py-3 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold transition border border-gray-700 flex items-center">
+                    <i data-lucide="code" class="w-5 h-5 mr-2"></i>
+                    코드 확인
+                </a>
+            </div>
+        </div>
+        <!-- Background Elements -->
+        <div class="absolute top-0 left-1/2 w-full -translate-x-1/2 h-full z-0 opacity-20 pointer-events-none">
+            <div class="absolute top-20 left-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
+            <div class="absolute top-20 right-20 w-72 h-72 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+            <div class="absolute -bottom-8 left-1/2 w-72 h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
+        </div>
+    </section>
+
+    <!-- Project Overview -->
+    <section id="about" class="py-20 bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-white">프로젝트 핵심 가치</h2>
+                <p class="mt-4 text-gray-400">기존 TRPG의 진입 장벽을 기술적으로 해결했습니다.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-gray-900 p-8 rounded-2xl border border-gray-700 hover:border-indigo-500 transition duration-300">
+                    <div class="w-12 h-12 bg-indigo-900/50 rounded-lg flex items-center justify-center mb-6 text-indigo-400">
+                        <i data-lucide="brain-circuit" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">지능형 AI GM</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        GPT-4o가 플레이어의 의도를 파악하고 실시간으로 서사를 생성합니다. 정해진 스크립트가 아닌, 매번 새로운 스토리를 경험할 수 있습니다.
                     </p>
                 </div>
-            </section>
-
-            <!-- 2. 전체 기술 스택 (Skills) -->
-            <section>
-                <h2 class="text-3xl font-bold text-white mb-6 border-b border-slate-700 pb-2">
-                    Skills
-                </h2>
-                <div class="flex flex-wrap gap-3">
-                    <span class="bg-indigo-900 text-indigo-200 px-4 py-1.5 rounded-full text-sm font-medium">Python</span>
-                    <span class="bg-indigo-900 text-indigo-200 px-4 py-1.5 rounded-full text-sm font-medium">Ollama</span>
-                    <span class="bg-indigo-900 text-indigo-200 px-4 py-1.5 rounded-full text-sm font-medium">AI Tool Calling</span>
-                    <span class="bg-indigo-900 text-indigo-200 px-4 py-1.5 rounded-full text-sm font-medium">JSON</span>
-                    <span class="bg-slate-700 text-slate-200 px-4 py-1.5 rounded-full text-sm font-medium">Llama 3.1 (8B)</span>
-                    <span class="bg-slate-700 text-slate-200 px-4 py-1.5 rounded-full text-sm font-medium">Qwen 2.5 (7B)</span>
-                    <span class="bg-slate-700 text-slate-200 px-4 py-1.5 rounded-full text-sm font-medium">openai (Python)</span>
-                    <span class="bg-slate-700 text-slate-200 px-4 py-1.5 rounded-full text-sm font-medium">google-generativeai</span>
+                <!-- Feature 2 -->
+                <div class="bg-gray-900 p-8 rounded-2xl border border-gray-700 hover:border-purple-500 transition duration-300">
+                    <div class="w-12 h-12 bg-purple-900/50 rounded-lg flex items-center justify-center mb-6 text-purple-400">
+                        <i data-lucide="scale" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">데이터 기반 공정성</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        AI의 자의적 판단을 배제하고, Python 엔진이 관리하는 스탯과 주사위 확률에 따라 승패가 결정되는 투명한 규칙 시스템을 적용했습니다.
+                    </p>
                 </div>
-            </section>
+                <!-- Feature 3 -->
+                <div class="bg-gray-900 p-8 rounded-2xl border border-gray-700 hover:border-cyan-500 transition duration-300">
+                    <div class="w-12 h-12 bg-cyan-900/50 rounded-lg flex items-center justify-center mb-6 text-cyan-400">
+                        <i data-lucide="infinity" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">장르의 무한 확장</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        판타지, SF, 호러 등 테마 제약이 없습니다. 프롬프트 엔지니어링을 통해 어떤 세계관이든 즉시 생성하고 플레이할 수 있습니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-            <!-- 3. 프로젝트 상세 -->
-            <section>
-                <h2 class="text-3xl font-bold text-white mb-4">
-                    Project: <span class="text-indigo-400">AI 기반 TRPG 진행 시스템</span>
-                </h2>
-
-                <!-- 프로젝트 카드 -->
-                <div class="bg-slate-800 rounded-lg shadow-xl overflow-hidden">
+    <!-- Technical Architecture -->
+    <section id="architecture" class="py-20 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold text-white mb-6">하이브리드 시스템 아키텍처</h2>
+                    <p class="text-gray-400 mb-8 leading-relaxed">
+                        각 기술의 장점을 극대화하기 위해 역할을 명확히 분리했습니다. Unity는 사용자 경험을, Python은 게임의 로직을, GPT-4o는 창의력을 담당합니다.
+                    </p>
                     
-                    <!-- 문제 정의 -->
-                    <div class="p-6 md:p-8 border-b border-slate-700">
-                        <h3 class="text-xl font-semibold text-white mb-3">[ 문제 정의 ]</h3>
-                        <p class="text-slate-300 leading-relaxed">
-                            TRPG(Tabletop Role-Playing Game)는 게임 마스터(GM)의 숙련도와 참여가 필수적이라 진입 장벽이 높습니다. GM이 없어도 AI가 GM 역할을 자동화하여, 누구나 혼자서도 TRPG의 핵심 재미인 '자유로운 스토리'를 즐길 수 있는 시스템을 만드는 것이 목표였습니다.
+                    <ul class="space-y-6">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-green-900/50 flex items-center justify-center text-green-400 mt-1">1</div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-white">Unity Client (Frontend)</h4>
+                                <p class="text-gray-400 text-sm">채팅 인터페이스, 실시간 스탯 UI, 비동기 서버 통신 담당.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-900/50 flex items-center justify-center text-blue-400 mt-1">2</div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-white">Python API Server (Backend Logic)</h4>
+                                <p class="text-gray-400 text-sm">HP, 인벤토리, 주사위 굴림 등 '게임의 진실(Ground Truth)' 관리.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-orange-900/50 flex items-center justify-center text-orange-400 mt-1">3</div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-bold text-white">AI Tool Calling (Core Tech)</h4>
+                                <p class="text-gray-400 text-sm">AI가 텍스트 생성 중 함수(`roll_check`)를 스스로 호출하여 '환각' 방지 및 논리적 게임 진행.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Diagram Visual -->
+                <div class="bg-gray-800 rounded-2xl p-8 border border-gray-700 shadow-2xl relative">
+                    <div class="absolute top-4 right-4 flex space-x-2">
+                        <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                    </div>
+                    <div class="mt-4 flex flex-col items-center space-y-4">
+                        <!-- Unity Box -->
+                        <div class="w-full bg-gray-700 p-4 rounded-lg text-center border border-green-500/30">
+                            <span class="text-green-400 font-bold block mb-1">Unity Client</span>
+                            <span class="text-xs text-gray-400">Player Input / UI Rendering</span>
+                        </div>
+                        <i data-lucide="arrow-down-up" class="text-gray-500"></i>
+                        <!-- Python Box -->
+                        <div class="w-full bg-gray-700 p-4 rounded-lg text-center border border-blue-500/30">
+                            <span class="text-blue-400 font-bold block mb-1">Python FastAPI Server</span>
+                            <span class="text-xs text-gray-400">Game State / Rules Engine</span>
+                        </div>
+                        <i data-lucide="arrow-down-up" class="text-gray-500"></i>
+                        <!-- OpenAI Box -->
+                        <div class="w-full bg-gray-700 p-4 rounded-lg text-center border border-orange-500/30">
+                            <span class="text-orange-400 font-bold block mb-1">OpenAI (GPT-4o)</span>
+                            <span class="text-xs text-gray-400">Narrative Generation / Tool Calling</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gameplay Showcase -->
+    <section id="gameplay" class="py-20 bg-gray-800 border-y border-gray-700">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <span class="text-indigo-400 font-semibold tracking-wider uppercase text-sm">Demo Video & Logs</span>
+                <h2 class="text-3xl font-bold text-white mt-2">실제 플레이 시연</h2>
+                <p class="text-gray-400 mt-2">사이버펑크 해결사 '감자'의 모험을 영상으로 확인하세요.</p>
+            </div>
+
+            <!-- Video Embed -->
+            <div class="aspect-video w-full rounded-2xl overflow-hidden shadow-2xl border border-gray-700 mb-16 bg-black">
+                <iframe class="w-full h-full" 
+                        src="https://www.youtube.com/embed/eZriC12OqI0?rel=0" 
+                        title="AI TRPG Gameplay Demo" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen>
+                </iframe>
+            </div>
+
+            <div class="text-center mb-8">
+                <h3 class="text-2xl font-bold text-white">플레이 로그 요약</h3>
+                <p class="text-gray-400 text-sm mt-2">영상에 포함된 주요 상호작용 내역입니다.</p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Log Item 1 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center border border-gray-600">
+                        <i data-lucide="user" class="text-gray-300"></i>
+                    </div>
+                    <div class="bg-gray-900 rounded-r-xl rounded-bl-xl p-5 flex-1 border border-gray-700">
+                        <div class="text-xs text-gray-500 mb-1">Player (감자)</div>
+                        <p class="text-gray-200">"환풍구를 통해 건물 내부로 잠입해서, 보안 터미널을 해킹해 내부 지도를 얻겠다."</p>
+                    </div>
+                </div>
+
+                <!-- Log Item 2 (System) -->
+                <div class="flex gap-4 justify-center">
+                    <div class="bg-indigo-900/30 rounded-lg px-6 py-2 border border-indigo-500/30">
+                        <p class="text-indigo-300 text-sm font-mono flex items-center gap-2">
+                            <i data-lucide="cpu" class="w-4 h-4"></i>
+                            [System] 기술(Tech) 판정 요청... 주사위 굴림(18) + 보정치(4) = <span class="font-bold text-green-400">22 (성공)</span>
                         </p>
                     </div>
-
-                    <!-- 아키텍처/설계 -->
-                    <div class="p-6 md:p-8 border-b border-slate-700">
-                        <h3 class="text-xl font-semibold text-white mb-3">[ 아키텍처 / 설계 ]</h3>
-                        <p class="text-slate-300 leading-relaxed mb-4">
-                            AI(LLM)의 서사/묘사 능력과 Python의 수치/규칙 계산을 명확히 분리하는 하이브리드 아키텍처를 채택했습니다. AI는 '스토리텔러' 역할만, Python은 '심판' 역할만 수행합니다.
-                            <br><br>
-                            로컬 PC에서 Ollama를 서버로 구동하고, Python의 `openai` 라이브러리를 통해 AI(LLM)가 Python의 `RulesEngine` 클래스 함수를 직접 호출(`tool_call`)하도록 설계했습니다. 모든 데이터는 JSON 포맷으로 교환됩니다.
-                        </p>
-                        <!-- 아키텍처 다이어그램 (텍스트 기반 설명) -->
-                        <div class="mt-4 p-4 bg-slate-900 rounded-md border border-slate-700">
-                            <p class="text-slate-400 font-mono text-sm"></p>
-                        </div>
-                    </div>
-
-                    <!-- 핵심 기능 -->
-                    <div class="p-6 md:p-8 border-b border-slate-700 space-y-6">
-                        <h3 class="text-xl font-semibold text-white mb-3">[ 핵심 기능 ]</h3>
-                        
-                        <!-- 기능 1 -->
-                        <div>
-                            <h4 class="text-lg font-semibold text-indigo-400 mb-2">AI 툴 호출(Tool Call) 기반의 규칙 엔진 연동</h4>
-                            <p class="text-slate-300 leading-relaxed">
-                                Python으로 `RulesEngine` 클래스를 구현하고, `roll_check`, `apply_damage`, `use_item` 등 핵심 규칙 함수를 정의했습니다. 플레이어의 입력(예: "함정을 살핀다")을 받은 AI(Llama 3.1)가 상황을 인지하고, Python의 `roll_check(skill_or_stat='perception', ...)` 함수를 툴 호출로 스스로 실행하도록 구현했습니다. 엔진은 판정 결과를 데이터(dict/JSON)로 AI에게 반환합니다.
-                            </p>
-                        </div>
-
-                        <!-- 기능 2 -->
-                        <div>
-                            <h4 class="text-lg font-semibold text-indigo-400 mb-2">로컬 LLM 비교 테스트 (논리 vs 서사)</h4>
-                            <p class="text-slate-300 leading-relaxed">
-                                프로토타입의 핵심인 '자연스러운 진행'을 위해 두 가지 로컬 LLM을 테스트했습니다. <strong>Llama 3.1 (8B)</strong>은 툴 호출(논리) 성능은 뛰어났으나 한국어 서사가 어색했습니다(예: `seem을 이치들이...`). 반면 <strong>Qwen 2.5 (7B)</strong>는 한국어 구사력을 기대했으나 툴 호출을 실패하고 서사 품질도 낮았습니다. 이를 통해 로컬 8B급 모델의 명확한 한계를 파악했습니다.
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <!-- 나의 역할 -->
-                    <div class="p-6 md:p-8 border-b border-slate-700">
-                        <h3 class="text-xl font-semibold text-white mb-3">[ 나의 역할 및 기여 ]</h3>
-                        <ul class="list-disc list-outside space-y-2 pl-5 text-slate-300">
-                            <li>AI-규칙 엔진 하이브리드 아키텍처 설계</li>
-                            <li>Python 기반 `RulesEngine` 클래스 및 핵심 판정 로직(`roll_check` 등) 구현</li>
-                            <li>Ollama 및 `openai` 라이브러리를 사용한 로컬 LLM 연동 및 툴 호출(Tool Calling) 구현 (`trpg_local.py`)</li>
-                            <li>Gemini, GPT-4o 등 API 기반 모델과 로컬 모델(Llama, Qwen)의 성능 및 적용 방안 비교 분석</li>
-                        </ul>
-                    </div>
-                    
-                    <!-- 결과 및 성과 -->
-                    <div class="p-6 md:p-8 border-b border-slate-700">
-                        <h3 class="text-xl font-semibold text-white mb-3">[ 결과 및 성과 ]</h3>
-                        <ul class="list-disc list-outside space-y-2 pl-5 text-slate-300">
-                            <li>Ollama(Llama 3.1 8B) 기반으로 AI GM의 툴 호출 기능이 작동하는 **로컬 프로토타입(`trpg_local.py`) 구현에 성공**함.</li>
-                            <li>AI가 서사를, Python이 규칙을 담당하는 기획서의 핵심 아키텍처가 기술적으로 **실현 가능함을 검증**함.</li>
-                        </ul>
-                    </div>
-
-                    <!-- 회고 -->
-                    <div class="p-6 md:p-8 bg-slate-800/50 rounded-b-lg">
-                        <h3 class="text-xl font-semibold text-white mb-4">[ 회고 (Lessons Learned) ]</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <h4 class="font-semibold text-indigo-400">배운 점</h4>
-                                <p class="text-slate-300">
-                                    로컬 LLM(8B급)은 **논리적 툴 호출 성능(Llama 3.1)**과 **자연스러운 한국어 구사 능력(Qwen 2.5)**이 비례하지 않음을 명확히 파악했습니다. 현재 사양(32GB RAM, GPU VRAM 부족)에서는 '어색한 한국어'를 감수하고 '기능 구현'에 집중하는 실용적인 트레이드오프가 필요함을 배웠습니다.
-                                </p>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-indigo-400">개선점</h4>
-                                <p class="text-slate-300">
-                                    현재 8B 모델은 **응답 속도가 느리고 한국어 서사가 매우 어색**한 치명적인 한계가 있습니다. 향후 GPT-4o 등 고성능 유료 API를 연동하여 '품질'을 확보하거나, 70B급 로컬 모델을 구동할 수 있는 고사양 하드웨어(고용량 VRAM) 도입을 고려하고 싶습니다.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
-            </section>
 
-        </main>
+                <!-- Log Item 3 (GM) -->
+                <div class="flex gap-4 flex-row-reverse">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-indigo-900 flex items-center justify-center border border-indigo-700">
+                        <i data-lucide="bot" class="text-indigo-300"></i>
+                    </div>
+                    <div class="bg-indigo-900/20 rounded-l-xl rounded-br-xl p-5 flex-1 border border-indigo-800">
+                        <div class="text-xs text-indigo-400 mb-1 text-right">Game Master (AI)</div>
+                        <p class="text-gray-200">
+                            당신의 손놀림은 빛처럼 빨랐습니다. 보안 시스템은 당신의 침입을 전혀 눈치채지 못했고, 화면에는 건물의 상세 구조도와 비밀 연구소의 위치가 붉은 점으로 표시됩니다. 하지만 복도 끝에서 경비 드론의 소리가 들려옵니다. 어떻게 하시겠습니까?
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code Highlights & Download -->
+    <section id="code" class="py-20 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold text-white">핵심 코드 구현</h2>
+                <div class="bg-indigo-900/30 text-indigo-300 text-xs px-3 py-1 rounded-full border border-indigo-500/20">
+                    MIT License
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Python Code Block -->
+                <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden flex flex-col">
+                    <div class="bg-gray-900 px-4 py-3 border-b border-gray-700 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+                            <span class="text-sm font-mono text-blue-400">server.py</span>
+                        </div>
+                        <button onclick="downloadCode('server.py', 'code-python')" class="flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs rounded transition shadow-md">
+                            <i data-lucide="download" class="w-3 h-3 mr-1.5"></i> 다운로드
+                        </button>
+                    </div>
+                    <div class="p-4 h-96 overflow-y-auto code-preview text-sm text-gray-300 bg-gray-800/50">
+<pre><code id="code-python">class RulesEngine:
+    # ... (초기화 생략) ...
+
+    # [핵심] 주사위 판정 로직
+    # Advantage 적용 (주사위 2개 중 높은 값) + 히든 보너스
+    def roll_check(self, stat_name: str, difficulty_check: int) -> dict:
+        modifier = self._get_modifier(stat_name)
         
-        <!-- 꼬리말 -->
-        <footer class="text-center mt-16 text-slate-500 text-sm">
-            <p>© 2025 심기준. All rights reserved.</p>
-        </footer>
+        # Advantage System
+        roll1 = random.randint(1, 20)
+        roll2 = random.randint(1, 20)
+        roll = max(roll1, roll2)
+        
+        # Hidden Gameplay Bonus (+5)
+        hidden_bonus = 5
+        total = roll + modifier + hidden_bonus
+        
+        is_success = total >= difficulty_check
+        outcome = "success" if is_success else "failure"
+        
+        return {
+            "check_type": stat_name,
+            "roll": roll,
+            "total": total,
+            "outcome": outcome
+        }
 
-    </div>
+    # AI Tool Definition (Schema)
+    # AI가 이 정보를 보고 스스로 함수를 호출함
+    def get_tools_schema():
+        return [
+            { 
+                "type": "function", 
+                "function": { 
+                    "name": "roll_check", 
+                    "description": "플레이어 행동 판정 수행", 
+                    "parameters": { ... } 
+                } 
+            }
+        ]</code></pre>
+                    </div>
+                </div>
 
+                <!-- Unity Code Block -->
+                <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden flex flex-col">
+                    <div class="bg-gray-900 px-4 py-3 border-b border-gray-700 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                            <span class="text-sm font-mono text-green-400">MainGameManager.cs</span>
+                        </div>
+                        <button onclick="downloadCode('MainGameManager.cs', 'code-unity')" class="flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-500 text-white text-xs rounded transition shadow-md">
+                            <i data-lucide="download" class="w-3 h-3 mr-1.5"></i> 다운로드
+                        </button>
+                    </div>
+                    <div class="p-4 h-96 overflow-y-auto code-preview text-sm text-gray-300 bg-gray-800/50">
+<pre><code id="code-unity">// [핵심] 서버 응답 처리 및 UI 업데이트
+IEnumerator SendActionRequest(string action)
+{
+    // ... (HTTP 요청 생성) ...
+
+    using (UnityWebRequest request = new UnityWebRequest(serverUrl, "POST"))
+    {
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            ActionResponse response = 
+                JsonUtility.FromJson<ActionResponse>(request.downloadHandler.text);
+            
+            // 1. AI GM의 서술(Narration) 출력
+            AddChatMessage("GM (AI)", response.narration);
+
+            // 2. 툴 호출 결과(주사위) 시각화
+            if (response.last_tool_response != null)
+            {
+                UpdateDiceResultUI(response.last_tool_response);
+            }
+        }
+    }
+}
+
+// 주사위 패널 UI 업데이트
+void UpdateDiceResultUI(ToolResponse tool)
+{
+    diceResultPanel.SetActive(true);
+    checkNameText.text = tool.check_type + " 판정";
+    diceValueText.text = tool.total.ToString();
+    
+    if (tool.outcome == "success") {
+        resultText.text = "SUCCESS";
+        resultText.color = Color.green;
+    } else {
+        resultText.text = "FAILURE";
+        resultText.color = Color.red;
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-800 py-10 text-center">
+        <p class="text-gray-500 text-sm">
+            AI-based Autonomous TRPG System Project<br>
+            Developed by Sim Gi-jun | Powered by Unity, Python, and OpenAI
+        </p>
+    </footer>
+
+    <!-- Init Icons & Scripts -->
+    <script>
+        lucide.createIcons();
+
+        // 코드 다운로드 기능
+        function downloadCode(filename, elementId) {
+            const codeElement = document.getElementById(elementId);
+            if (!codeElement) return;
+
+            const codeText = codeElement.innerText;
+            const blob = new Blob([codeText], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = filename;
+            
+            document.body.appendChild(a);
+            a.click();
+            
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+    </script>
 </body>
 </html>
