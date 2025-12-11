@@ -37,7 +37,7 @@
                         <a href="#about" class="hover:bg-gray-800 px-3 py-2 rounded-md text-sm font-medium transition">소개</a>
                         <a href="#architecture" class="hover:bg-gray-800 px-3 py-2 rounded-md text-sm font-medium transition">아키텍처</a>
                         <a href="#gameplay" class="hover:bg-gray-800 px-3 py-2 rounded-md text-sm font-medium transition">플레이 시연</a>
-                        <a href="#code" class="hover:bg-gray-800 px-3 py-2 rounded-md text-sm font-medium transition">코드 다운로드</a>
+                        <a href="#code" class="hover:bg-gray-800 px-3 py-2 rounded-md text-sm font-medium transition">데모 다운로드</a>
                     </div>
                 </div>
             </div>
@@ -67,8 +67,8 @@
                     시연 영상 보기
                 </a>
                 <a href="#code" class="px-8 py-3 rounded-full bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold transition border border-gray-700 flex items-center">
-                    <i data-lucide="code" class="w-5 h-5 mr-2"></i>
-                    코드 확인
+                    <i data-lucide="terminal" class="w-5 h-5 mr-2"></i>
+                    데모 실행하기
                 </a>
             </div>
         </div>
@@ -252,126 +252,175 @@
         </div>
     </section>
 
-    <!-- Code Highlights & Download -->
+    <!-- Code Download Section -->
     <section id="code" class="py-20 bg-gray-900">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between mb-8">
-                <h2 class="text-3xl font-bold text-white">핵심 코드 구현</h2>
-                <div class="bg-indigo-900/30 text-indigo-300 text-xs px-3 py-1 rounded-full border border-indigo-500/20">
-                    MIT License
+                <div>
+                    <h2 class="text-3xl font-bold text-white">데모 실행해보기</h2>
+                    <p class="text-gray-400 mt-2">API Key만 입력하면 터미널에서 바로 실행 가능한 Python 독립 버전입니다.</p>
                 </div>
+                <button onclick="downloadCode('terminal_rpg.py', 'code-python')" class="flex items-center px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg transition shadow-lg animate-bounce">
+                    <i data-lucide="download" class="w-5 h-5 mr-2"></i>
+                    terminal_rpg.py 다운로드
+                </button>
             </div>
             
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Python Code Block -->
-                <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden flex flex-col">
-                    <div class="bg-gray-900 px-4 py-3 border-b border-gray-700 flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-full bg-blue-500"></span>
-                            <span class="text-sm font-mono text-blue-400">server.py</span>
-                        </div>
-                        <button onclick="downloadCode('server.py', 'code-python')" class="flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs rounded transition shadow-md">
-                            <i data-lucide="download" class="w-3 h-3 mr-1.5"></i> 다운로드
-                        </button>
+            <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden shadow-2xl">
+                <div class="bg-gray-900 px-4 py-3 border-b border-gray-700 flex items-center gap-2">
+                    <div class="flex gap-1.5">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
                     </div>
-                    <div class="p-4 h-96 overflow-y-auto code-preview text-sm text-gray-300 bg-gray-800/50">
-<pre><code id="code-python">class RulesEngine:
-    # ... (초기화 생략) ...
+                    <span class="ml-2 text-sm font-mono text-gray-400">terminal_rpg.py</span>
+                </div>
+                <div class="p-6 overflow-x-auto bg-gray-900/50">
+<pre class="code-preview text-sm text-gray-300 whitespace-pre"><code id="code-python">import os
+import json
+import random
+import sys
 
-    # [핵심] 주사위 판정 로직
-    # Advantage 적용 (주사위 2개 중 높은 값) + 히든 보너스
-    def roll_check(self, stat_name: str, difficulty_check: int) -> dict:
-        modifier = self._get_modifier(stat_name)
+# 1. OpenAI 라이브러리 확인
+try:
+    import openai
+except ImportError:
+    print("❌ 'openai' 라이브러리가 설치되지 않았습니다.")
+    print("터미널에서 'pip install openai'를 실행해주세요.")
+    sys.exit(1)
+
+# 2. 게임 엔진 (주사위 판정 로직)
+class RulesEngine:
+    def __init__(self, char_stats):
+        self.stats = char_stats
+    
+    def roll_check(self, stat_name, difficulty_check):
+        print(f"\n[SYSTEM] 🎲 '{stat_name}' 판정 중... (난이도: {difficulty_check})")
         
-        # Advantage System
-        roll1 = random.randint(1, 20)
-        roll2 = random.randint(1, 20)
-        roll = max(roll1, roll2)
+        # 보정치 계산 (간단하게)
+        stat_val = self.stats.get(stat_name, 10)
+        modifier = (stat_val - 10) // 2
         
-        # Hidden Gameplay Bonus (+5)
-        hidden_bonus = 5
-        total = roll + modifier + hidden_bonus
+        # 주사위 굴림 (Advantage: 2번 굴려 높은 값)
+        roll = max(random.randint(1, 20), random.randint(1, 20))
+        
+        # 히든 보너스 (+3) - 플레이어 기분 좋게 하기 위함
+        total = roll + modifier + 3
         
         is_success = total >= difficulty_check
-        outcome = "success" if is_success else "failure"
+        result = "성공! 🎉" if is_success else "실패... 💀"
         
-        return {
-            "check_type": stat_name,
-            "roll": roll,
-            "total": total,
-            "outcome": outcome
-        }
+        print(f"   ㄴ 주사위: {roll} + 보정: {modifier} + 히든: 3 = 총합: {total}")
+        print(f"   ㄴ 결과: {result}\n")
+        
+        return {"outcome": "success" if is_success else "failure", "total": total}
 
-    # AI Tool Definition (Schema)
-    # AI가 이 정보를 보고 스스로 함수를 호출함
-    def get_tools_schema():
-        return [
-            { 
-                "type": "function", 
-                "function": { 
-                    "name": "roll_check", 
-                    "description": "플레이어 행동 판정 수행", 
-                    "parameters": { ... } 
-                } 
-            }
-        ]</code></pre>
-                    </div>
-                </div>
+# 3. 메인 게임 루프
+def main():
+    print("\n" + "="*40)
+    print("   🤖 AI 자율 진행 TRPG (Terminal Ver.)")
+    print("="*40 + "\n")
 
-                <!-- Unity Code Block -->
-                <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden flex flex-col">
-                    <div class="bg-gray-900 px-4 py-3 border-b border-gray-700 flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-full bg-green-500"></span>
-                            <span class="text-sm font-mono text-green-400">MainGameManager.cs</span>
-                        </div>
-                        <button onclick="downloadCode('MainGameManager.cs', 'code-unity')" class="flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-500 text-white text-xs rounded transition shadow-md">
-                            <i data-lucide="download" class="w-3 h-3 mr-1.5"></i> 다운로드
-                        </button>
-                    </div>
-                    <div class="p-4 h-96 overflow-y-auto code-preview text-sm text-gray-300 bg-gray-800/50">
-<pre><code id="code-unity">// [핵심] 서버 응답 처리 및 UI 업데이트
-IEnumerator SendActionRequest(string action)
-{
-    // ... (HTTP 요청 생성) ...
+    # API Key 입력
+    api_key = input("🔑 OpenAI API Key를 입력하세요: ").strip()
+    if not api_key:
+        print("API Key가 없으면 실행할 수 없습니다.")
+        return
 
-    using (UnityWebRequest request = new UnityWebRequest(serverUrl, "POST"))
-    {
-        yield return request.SendWebRequest();
-
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-            ActionResponse response = 
-                JsonUtility.FromJson<ActionResponse>(request.downloadHandler.text);
-            
-            // 1. AI GM의 서술(Narration) 출력
-            AddChatMessage("GM (AI)", response.narration);
-
-            // 2. 툴 호출 결과(주사위) 시각화
-            if (response.last_tool_response != null)
-            {
-                UpdateDiceResultUI(response.last_tool_response);
-            }
-        }
-    }
-}
-
-// 주사위 패널 UI 업데이트
-void UpdateDiceResultUI(ToolResponse tool)
-{
-    diceResultPanel.SetActive(true);
-    checkNameText.text = tool.check_type + " 판정";
-    diceValueText.text = tool.total.ToString();
+    client = openai.OpenAI(api_key=api_key)
     
-    if (tool.outcome == "success") {
-        resultText.text = "SUCCESS";
-        resultText.color = Color.green;
-    } else {
-        resultText.text = "FAILURE";
-        resultText.color = Color.red;
-    }
-}</code></pre>
-                    </div>
+    # 캐릭터 생성
+    print("\n[캐릭터 생성]")
+    theme = input("1. 플레이하고 싶은 테마(장르)는? (예: 사이버펑크, 판타지, 좀비): ")
+    name = input("2. 캐릭터 이름은?: ")
+    print(f"\n✅ '{name}'(이)가 '{theme}' 세계관에 입장합니다.\n")
+    
+    # 기본 스탯 설정
+    char_stats = {"힘": 12, "민첩": 14, "지능": 14, "운": 10}
+    engine = RulesEngine(char_stats)
+    
+    # 시스템 프롬프트
+    system_prompt = f"""
+    당신은 '{theme}' 세계관의 TRPG 게임 마스터(GM)입니다.
+    플레이어 '{name}'의 행동에 따라 스토리를 진행하세요.
+    중요한 순간에는 반드시 'roll_check' 툴을 사용하여 판정을 내리세요.
+    결과를 텍스트로 말하지 말고 툴을 호출하세요.
+    """
+    
+    messages = [{"role": "system", "content": system_prompt}]
+    
+    # 첫 장면 생성
+    print("📖 스토리를 생성 중입니다...")
+    first_query = "이야기의 도입부를 묘사하고, 플레이어에게 행동을 물어보세요."
+    messages.append({"role": "user", "content": first_query})
+    
+    # 게임 루프
+    while True:
+        try:
+            # AI 응답 요청
+            response = client.chat.completions.create(
+                model="gpt-4o",
+                messages=messages,
+                tools=[{
+                    "type": "function",
+                    "function": {
+                        "name": "roll_check",
+                        "description": "스탯 판정을 수행합니다.",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {
+                                "stat_name": {"type": "string", "description": "판정할 스탯 이름"},
+                                "difficulty_check": {"type": "integer", "description": "난이도(DC)"}
+                            },
+                            "required": ["stat_name", "difficulty_check"]
+                        }
+                    }
+                }]
+            )
+            
+            msg = response.choices[0].message
+            messages.append(msg)
+            
+            # 1. 툴 호출 처리 (주사위 굴림)
+            if msg.tool_calls:
+                for tool in msg.tool_calls:
+                    if tool.function.name == "roll_check":
+                        args = json.loads(tool.function.arguments)
+                        result = engine.roll_check(args["stat_name"], args["difficulty_check"])
+                        
+                        # 툴 결과 메시지 추가
+                        messages.append({
+                            "role": "tool",
+                            "tool_call_id": tool.id,
+                            "name": "roll_check",
+                            "content": json.dumps(result)
+                        })
+                
+                # 툴 결과 반영하여 다시 AI 묘사 요청
+                response = client.chat.completions.create(
+                    model="gpt-4o", messages=messages
+                )
+                msg = response.choices[0].message
+                messages.append(msg)
+
+            # 2. GM 서술 출력
+            print(f"\n[GM]: {msg.content}\n")
+            
+            # 3. 사용자 입력
+            user_input = input(f"[{name}]: ")
+            if user_input.lower() in ["종료", "exit", "quit"]:
+                print("게임을 종료합니다. 즐거웠습니다!")
+                break
+                
+            messages.append({"role": "user", "content": user_input})
+
+        except Exception as e:
+            print(f"\n❌ 오류 발생: {e}")
+            break
+
+if __name__ == "__main__":
+    main()
+</code></pre>
                 </div>
             </div>
         </div>
@@ -395,7 +444,7 @@ void UpdateDiceResultUI(ToolResponse tool)
             if (!codeElement) return;
 
             const codeText = codeElement.innerText;
-            const blob = new Blob([codeText], { type: 'text/plain' });
+            const blob = new Blob([codeText], { type: 'text/plain;charset=utf-8' });
             const url = window.URL.createObjectURL(blob);
             
             const a = document.createElement('a');
